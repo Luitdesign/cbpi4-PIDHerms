@@ -83,8 +83,8 @@ class PID_HERMS(CBPiKettleLogic):
 
     # subroutine that controlls temperature via pid controll
     async def temp_control(self):
-        await self.actor_on(self.heater,0)
         heat_percent_old = 0
+        heater_is_on = False
 
         while self.running:
             try:
@@ -117,9 +117,18 @@ class PID_HERMS(CBPiKettleLogic):
                 else:
                     heat_percent = 0
 
-            # Test with actor power
+            # switch heater on/off based on calculated output.
+            # this ensures auto mode also works with actors that require explicit on/off state
+            # in addition to power updates.
+            if heat_percent > 0 and not heater_is_on:
+                await self.actor_on(self.heater)
+                heater_is_on = True
+            elif heat_percent <= 0 and heater_is_on:
+                await self.actor_off(self.heater)
+                heater_is_on = False
+
             if heat_percent != heat_percent_old:
-                await self.actor_set_power(self.heater,heat_percent)
+                await self.actor_set_power(self.heater, heat_percent)
                 heat_percent_old = heat_percent
             await asyncio.sleep(self.sample_time)
 
