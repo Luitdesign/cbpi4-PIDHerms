@@ -36,7 +36,6 @@
 
 Changelog:
 
-- 27.03.26: (0.0.7) Heater control now re-checks actual actor state each cycle to prevent external target/auto toggles from keeping HLT element off
 - 27.03.26: (0.0.6) Added optional HLT heater actor override (HLT_Heater) so auto mode on Mash Tun can control HLT element
 - 27.03.26: (0.0.5) Renamed plugin/package identifiers for side-by-side installation with cbpi4-PIDHerms
 - 11.05.22: (0.0.4) Updated README (removed cbpi add)
