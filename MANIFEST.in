@@ -1,2 +1,2 @@
-include cbpi4-PIDHerms/config.yaml
-recursive-include cbpi4-PIDHerms/static *
+include cbpi4-PIDHerms-Parallel/config.yaml
+recursive-include cbpi4-PIDHerms-Parallel/static *
