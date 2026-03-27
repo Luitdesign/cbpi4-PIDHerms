@@ -7,6 +7,8 @@ import datetime
 
 @parameters([Property.Sensor(label = "HLT_Sensor",
                              description="Sensor of HLT Kettle"),
+             Property.Text(label="HLT_Heater",
+                           description="Optional actor id of HLT heater/element. If empty, kettle heater is used."),
              Property.Number(label="DeltaTemp", configurable=True, 
                              description="Max Delta HLT Temp above Mash Target Temp (Heater/PID will switch off if delta between HLT and Mash is larger)"),
              Property.Number(label="P", configurable=True, default_value=117.0795, 
@@ -84,7 +86,6 @@ class PID_HERMS_PARALLEL(CBPiKettleLogic):
     # subroutine that controlls temperature via pid controll
     async def temp_control(self):
         heat_percent_old = 0
-        heater_is_on = False
 
         while self.running:
             try:
@@ -116,6 +117,11 @@ class PID_HERMS_PARALLEL(CBPiKettleLogic):
                     heat_percent = self.pid.calc(sensor_value, target_temp)
                 else:
                     heat_percent = 0
+
+            # refresh current heater actor state every cycle to avoid stale local state.
+            # this keeps heating active even if another controller/UI toggles the actor.
+            heater_actor = self.cbpi.actor.find_by_id(self.heater)
+            heater_is_on = bool(heater_actor and heater_actor.instance and heater_actor.instance.state)
 
             # switch heater on/off based on calculated output.
             # this ensures auto mode also works with actors that require explicit on/off state
@@ -159,9 +165,12 @@ class PID_HERMS_PARALLEL(CBPiKettleLogic):
             self.max_pump_temp = float(self.props.get("Max_Pump_Temp", maxpumptemp))
 
             self.kettle = self.get_kettle(self.id)
-            self.heater = self.kettle.heater
+            self.heater = self.props.get("HLT_Heater") or self.kettle.heater
             self.agitator = self.kettle.agitator
             self.sensor = self.props.get("HLT_Sensor", None)
+
+            if self.heater is None:
+                raise ValueError("No heater configured. Set kettle heater or HLT_Heater actor id")
             self.delta = float(self.props.get("DeltaTemp",0))
 
             logging.info("CustomLogic P:{} I:{} D:{} {} {}".format(p, i, d, self.kettle, self.heater))

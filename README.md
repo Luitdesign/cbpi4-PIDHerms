@@ -24,6 +24,7 @@
 	- Rest Time: Pump Rest Time in seconds
 	- SampleTime: 2 or 5 seconds. Determines PID recalcultation frequency
 	- HLT Sensor: Sensor that measures your HLT temperature
+	- HLT Heater: Optional actor id of the HLT heating element. Use this when the logic runs on Mash Tun but should switch the HLT element.
 	- DeltaTemp: Plugin allows control of HLT temp. This values determines the max delta temp that the HLT is allowed to be above the Target Mash Temp. Power will be set to 0 if delta temp is larger than max delta.
 
 ## Installation:
@@ -35,6 +36,8 @@
 
 Changelog:
 
+- 27.03.26: (0.0.7) Heater control now re-checks actual actor state each cycle to prevent external target/auto toggles from keeping HLT element off
+- 27.03.26: (0.0.6) Added optional HLT heater actor override (HLT_Heater) so auto mode on Mash Tun can control HLT element
 - 27.03.26: (0.0.5) Renamed plugin/package identifiers for side-by-side installation with cbpi4-PIDHerms
 - 11.05.22: (0.0.4) Updated README (removed cbpi add)
 - 10.05.22: (0.0.3) Removed cbpi dependency
