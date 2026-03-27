@@ -7,6 +7,8 @@ import datetime
 
 @parameters([Property.Sensor(label = "HLT_Sensor",
                              description="Sensor of HLT Kettle"),
+             Property.Text(label="HLT_Heater",
+                           description="Optional actor id of HLT heater/element. If empty, kettle heater is used."),
              Property.Number(label="DeltaTemp", configurable=True, 
                              description="Max Delta HLT Temp above Mash Target Temp (Heater/PID will switch off if delta between HLT and Mash is larger)"),
              Property.Number(label="P", configurable=True, default_value=117.0795, 
@@ -159,9 +161,12 @@ class PID_HERMS_PARALLEL(CBPiKettleLogic):
             self.max_pump_temp = float(self.props.get("Max_Pump_Temp", maxpumptemp))
 
             self.kettle = self.get_kettle(self.id)
-            self.heater = self.kettle.heater
+            self.heater = self.props.get("HLT_Heater") or self.kettle.heater
             self.agitator = self.kettle.agitator
             self.sensor = self.props.get("HLT_Sensor", None)
+
+            if self.heater is None:
+                raise ValueError("No heater configured. Set kettle heater or HLT_Heater actor id")
             self.delta = float(self.props.get("DeltaTemp",0))
 
             logging.info("CustomLogic P:{} I:{} D:{} {} {}".format(p, i, d, self.kettle, self.heater))
