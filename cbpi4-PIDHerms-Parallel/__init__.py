@@ -86,7 +86,6 @@ class PID_HERMS_PARALLEL(CBPiKettleLogic):
     # subroutine that controlls temperature via pid controll
     async def temp_control(self):
         heat_percent_old = 0
-        heater_is_on = False
 
         while self.running:
             try:
@@ -118,6 +117,11 @@ class PID_HERMS_PARALLEL(CBPiKettleLogic):
                     heat_percent = self.pid.calc(sensor_value, target_temp)
                 else:
                     heat_percent = 0
+
+            # refresh current heater actor state every cycle to avoid stale local state.
+            # this keeps heating active even if another controller/UI toggles the actor.
+            heater_actor = self.cbpi.actor.find_by_id(self.heater)
+            heater_is_on = bool(heater_actor and heater_actor.instance and heater_actor.instance.state)
 
             # switch heater on/off based on calculated output.
             # this ensures auto mode also works with actors that require explicit on/off state
