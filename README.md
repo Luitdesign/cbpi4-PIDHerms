@@ -1,4 +1,4 @@
-# CBPi4 HERMS PID KettleLogic 
+# CBPi4 HERMS PID KettleLogic (Parallel Variant) 
 
 ### This Kettle Logic can be used to run a HERMS System with CraftbeerPi4. 
 
@@ -27,7 +27,7 @@
 	- DeltaTemp: Plugin allows control of HLT temp. This values determines the max delta temp that the HLT is allowed to be above the Target Mash Temp. Power will be set to 0 if delta temp is larger than max delta.
 
 ## Installation:
-- sudo pip3 install cbpi4-PIDHerms 
+- sudo pip3 install cbpi4-PIDHerms-Parallel 
 - (or from the GIT repo) -> sudo pip3 install https://github.com/avollkopf/cbpi4-PIDHerms/archive/main.zip
 
 ## Requirements:
@@ -35,6 +35,7 @@
 
 Changelog:
 
+- 27.03.26: (0.0.5) Renamed plugin/package identifiers for side-by-side installation with cbpi4-PIDHerms
 - 11.05.22: (0.0.4) Updated README (removed cbpi add)
 - 10.05.22: (0.0.3) Removed cbpi dependency
 - 21.11.21: (0.0.2) Plugin can now use actor power incl. PWM actors

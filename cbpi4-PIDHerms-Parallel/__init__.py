@@ -32,7 +32,7 @@ import datetime
              Property.Number(label="Rest_Time", configurable=True, default_value=60,
                              description="Rest the pump for this many seconds every rest interval.")])
 
-class PID_HERMS(CBPiKettleLogic):
+class PID_HERMS_PARALLEL(CBPiKettleLogic):
 
     def __init__(self, cbpi, id, props):
         super().__init__(cbpi, id, props)
@@ -175,7 +175,7 @@ class PID_HERMS(CBPiKettleLogic):
         except asyncio.CancelledError as e:
             pass
         except Exception as e:
-            logging.error("PIDHerms Error {}".format(e))
+            logging.error("PIDHerms Parallel Error {}".format(e))
         finally:
             self.running = False
             await self.actor_off(self.heater)
@@ -263,4 +263,4 @@ def setup(cbpi):
     :return: 
     '''
 
-    cbpi.plugin.register("PID_HERMS", PID_HERMS)
+    cbpi.plugin.register("PID_HERMS_PARALLEL", PID_HERMS_PARALLEL)
